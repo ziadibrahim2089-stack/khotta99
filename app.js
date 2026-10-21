@@ -114,9 +114,10 @@ function renderToday() {
   const s = S.settings, t = peekDay(todayKey()), st = streak(), h = new Date().getHours();
   $("hello").textContent = (h < 12 ? "صباح الخير" : h < 18 ? "أهلاً" : "مساء الخير") + (s.name ? " يا " + s.name : "");
   $("streak").textContent = st;
+  $("streakPill").textContent = `🔥 ${st}`;
   const target = st < 14 ? 14 : st < 30 ? 30 : st < 90 ? 90 : Math.ceil((st + 1) / 30) * 30;
-  $("ringArc").style.strokeDashoffset = (326.7 * (1 - Math.min(1, st / target))).toFixed(1);
-  $("streakNote").textContent = st < 14 ? `فاضل ${14 - st} يوم وتعدّي أصعب فترة.` : `الهدف الجاي: ${target} يوم.`;
+  $("streakNote").textContent = st < 14 ? `فاضل ${14 - st} يوم وتعدّي أصعب فترة` : `الهدف الجاي: ${target} يوم`;
+  $("dateChip").textContent = new Intl.DateTimeFormat("ar-EG-u-nu-latn", { weekday: "long", day: "numeric", month: "long" }).format(new Date());
   $("setupNote").hidden = !!s.setupDone;
 
   // pledge: until done today
@@ -127,7 +128,7 @@ function renderToday() {
   // tiles
   const w = t.walk || 0, live = !!S.walkStart, ws = walkStreak();
   $("walkSub").textContent = live ? "ماشي دلوقتي…" : w >= WALK_GOAL ? `${w} دقيقة` : `${w} من ${WALK_GOAL} دقيقة`;
-  $("walkFlame").hidden = ws < 1; $("walkFlame").textContent = `🔥 ${ws}`;
+  $("walkFlame").hidden = ws < 1; $("walkFlame").textContent = `🔥 ${ws} ${ws === 1 ? "يوم" : "أيام"} ورا بعض`;
   tile("itWalk", w > 0 || live, w >= WALK_GOAL);
   const p = t.protein || 0;
   $("protSub").textContent = `${p} من ${GOAL_P} جم`;
@@ -137,6 +138,8 @@ function renderToday() {
   $("pUndo").hidden = !last;
   $("waterSub").textContent = t.water ? "خلّصتها" : "اضغط لما تخلص";
   tile("itWater", !!t.water, !!t.water);
+  const doneN = [w >= WALK_GOAL, p >= GOAL_P, !!t.water, (t.meals || 0) >= 3].filter(Boolean).length;
+  $("doneCount").textContent = `${doneN} / 4`;
 
   // sugar link
   $("ateSugar").textContent = t.sugar ? "اتسجّل إنك كلت سكر النهارده" : "كلت سكر النهارده";

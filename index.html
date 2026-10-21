@@ -19,16 +19,13 @@
 
   <!-- ============ TODAY: one short list ============ -->
   <section id="tab-today" class="tab">
-    <header class="hero">
-      <div class="ring" aria-label="أيام من غير سكر">
-        <svg viewBox="0 0 120 120" aria-hidden="true"><circle cx="60" cy="60" r="52" class="ring-bg"/><circle id="ringArc" cx="60" cy="60" r="52" class="ring-fg"/></svg>
-        <div class="ring-in"><span class="big num" id="streak">0</span><span class="lbl">يوم من غير سكر</span></div>
-      </div>
-      <div class="hero-txt">
-        <h1 id="hello">صباح الخير</h1>
-        <p id="streakNote" class="muted"></p>
-      </div>
+    <header class="topbar">
+      <button class="tpill" data-go="progress" type="button">التقدم</button>
+      <h1>النهارده</h1>
+      <span class="tpill flame num" id="streakPill">🔥 0</span>
     </header>
+    <div class="daterow"><span aria-hidden="true">📅</span><span class="chip" id="dateChip"></span><span class="num muted" id="doneCount"></span></div>
+    <p class="hello" id="hello"></p>
 
     <div id="setupNote" class="card warn" hidden>
       <span>أول مرة؟ الصق كود الإعدادات اللي Claude بعتهولك.</span>
@@ -45,24 +42,34 @@
       <button class="btn primary big-btn" id="pledgeBtn" type="button">أتعهد: النهارده مش هشتري مخبوزات ولا حلويات</button>
     </section>
 
-    <div class="tiles" aria-label="مهام النهارده">
-      <button class="tile walk" id="itWalk" type="button">
-        <span class="t-ic" aria-hidden="true">🚶</span>
-        <b>مشي</b><span class="t-sub" id="walkSub">0 من 30 دقيقة</span>
-        <span class="t-streak" id="walkFlame" hidden></span>
-      </button>
+    <h2 class="sec"><span aria-hidden="true">🚫🍫</span> السكر</h2>
+    <div class="tile sugar wide on">
+      <span class="t-ic" aria-hidden="true">🏆</span>
+      <span class="t-tx"><b><span class="num" id="streak">0</span> يوم من غير سكر</b><span class="t-sub" id="streakNote"></span></span>
+    </div>
+
+    <h2 class="sec"><span aria-hidden="true">🍽️</span> الأكل</h2>
+    <div class="tiles">
       <label class="tile meal" id="itMeal" for="mealInput">
         <span class="t-ic" aria-hidden="true">📸</span>
-        <b>صوّر الأكلة</b><span class="t-sub" id="mealSub">ولا أكلة لسه</span>
+        <span class="t-tx"><b>صوّر الأكلة</b><span class="t-sub" id="mealSub">ولا أكلة لسه</span></span>
       </label>
       <input id="mealInput" type="file" accept="image/*" capture="environment" hidden>
       <button class="tile prot" id="itProt" type="button">
         <span class="t-ic" aria-hidden="true">🥚</span>
-        <b>بروتين</b><span class="t-sub" id="protSub">0 من 150 جم</span>
+        <span class="t-tx"><b>بروتين</b><span class="t-sub" id="protSub">0 من 150 جم</span></span>
       </button>
       <button class="tile water" id="itWater" type="button">
         <span class="t-ic" aria-hidden="true">💧</span>
-        <b>2.5 لتر مية</b><span class="t-sub" id="waterSub">اضغط لما تخلص</span>
+        <span class="t-tx"><b>2.5 لتر مية</b><span class="t-sub" id="waterSub">اضغط لما تخلص</span></span>
+      </button>
+    </div>
+
+    <h2 class="sec"><span aria-hidden="true">🏃</span> الحركة</h2>
+    <div class="tiles">
+      <button class="tile walk" id="itWalk" type="button">
+        <span class="t-ic" aria-hidden="true">🚶</span>
+        <span class="t-tx"><b>مشي 30 دقيقة</b><span class="t-streak" id="walkFlame" hidden></span><span class="t-sub" id="walkSub">0 من 30 دقيقة</span></span>
       </button>
     </div>
 
@@ -238,9 +245,9 @@
 
 <button class="sos-fab" id="sosBtn" type="button">نفسي في حاجة حلوة</button>
 <nav class="nav" aria-label="التنقل">
-  <button type="button" data-go="today" class="on">النهارده</button>
-  <button type="button" data-go="progress">التقدم</button>
-  <button type="button" data-go="settings">الإعدادات</button>
+  <button type="button" data-go="today" class="on"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/><path d="M7 14h2M11 14h2M15 14h2M7 17h2M11 17h2"/></svg>النهارده</button>
+  <button type="button" data-go="progress"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>التقدم</button>
+  <button type="button" data-go="settings"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg>أنا</button>
 </nav>
 <div class="toast" id="toast" hidden></div>
 
