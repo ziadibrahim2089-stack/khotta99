@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>خطة 99</title>
+<meta name="theme-color" content="#EEF1F6" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0E131D" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="خطة 99">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main class="wrap">
+
+  <!-- ============ TODAY: one short list ============ -->
+  <section id="tab-today" class="tab">
+    <header class="hero">
+      <div class="ring" aria-label="أيام من غير سكر">
+        <svg viewBox="0 0 120 120" aria-hidden="true"><circle cx="60" cy="60" r="52" class="ring-bg"/><circle id="ringArc" cx="60" cy="60" r="52" class="ring-fg"/></svg>
+        <div class="ring-in"><span class="big num" id="streak">0</span><span class="lbl">يوم من غير سكر</span></div>
+      </div>
+      <div class="hero-txt">
+        <h1 id="hello">صباح الخير</h1>
+        <p id="streakNote" class="muted"></p>
+      </div>
+    </header>
+
+    <div id="setupNote" class="card warn" hidden>
+      <span>أول مرة؟ الصق كود الإعدادات اللي Claude بعتهولك.</span>
+      <button class="btn" data-go="settings" type="button">افتح الإعدادات</button>
+    </div>
+
+    <section class="card pledge" id="pledgeCard" hidden>
+      <p class="q">نمت قبل 12:30 امبارح؟</p>
+      <div class="row-btns">
+        <button class="btn seg" data-sleep="1" type="button">أيوه</button>
+        <button class="btn seg" data-sleep="0" type="button">لأ</button>
+      </div>
+      <p id="riskNote" class="risk" hidden>النهارده يوم خطر. السهر بيعلّي الرغبة في السكر. خلي أكلك جاهز وما تعديش جنب المخبز.</p>
+      <button class="btn primary big-btn" id="pledgeBtn" type="button">أتعهد: النهارده مش هشتري مخبوزات ولا حلويات</button>
+    </section>
+
+    <ul class="today" aria-label="مهام النهارده">
+      <li class="item" id="itWalk">
+        <span class="ic" aria-hidden="true">🚶</span>
+        <span class="tx"><b>مشي</b><span class="sub" id="walkSub">0 من 30 دقيقة</span></span>
+        <span class="mini"><i id="walkBar"></i></span>
+        <button class="act primary" id="walkBtn" type="button">ابدأ</button>
+      </li>
+      <li class="item" id="itMeal">
+        <span class="ic" aria-hidden="true">📸</span>
+        <span class="tx"><b>صوّر الأكلة</b><span class="sub" id="mealSub">ولا أكلة لسه</span></span>
+        <label class="act primary" for="mealInput">صوّر</label>
+        <input id="mealInput" type="file" accept="image/*" capture="environment" hidden>
+      </li>
+      <li class="item" id="itProt">
+        <span class="ic" aria-hidden="true">🥚</span>
+        <span class="tx"><b>بروتين</b><span class="sub" id="protSub">0 من 150 جم</span></span>
+        <span class="mini"><i id="protBar"></i></span>
+        <button class="act" id="protBtn" type="button">+ ضيف</button>
+      </li>
+      <li class="item tog" data-habit="water">
+        <span class="ic" aria-hidden="true">💧</span>
+        <span class="tx"><b>2.5 لتر مية</b></span>
+        <button class="check" type="button" aria-label="مية"></button>
+      </li>
+    </ul>
+
+    <div class="meals" id="meals"></div>
+
+    <button class="btn wa big-btn" id="sendMom" type="button">ابعت تقرير النهارده لماما</button>
+    <button class="linkbtn center" id="ateSugar" type="button">كلت سكر النهارده</button>
+  </section>
+
+  <!-- ============ PROGRESS ============ -->
+  <section id="tab-progress" class="tab" hidden>
+    <h1 class="page-h">التقدم</h1>
+
+    <section class="card">
+      <h2>آخر 7 أيام</h2>
+      <div class="week" id="week"></div>
+      <p class="muted small legend"><span class="sw ok"></span>من غير سكر <span class="sw bad"></span>كلت سكر <span class="sw walk"></span>مشيت 30+</p>
+    </section>
+
+    <section class="card">
+      <div class="row"><h2>الوزن</h2><button class="act" id="addWeight" type="button">+ سجّل</button></div>
+      <div class="stats" id="wstats"></div>
+      <svg class="chart" id="chart" viewBox="0 0 340 170" role="img" aria-label="منحنى الوزن"></svg>
+    </section>
+
+    <section class="card">
+      <h2>الغرامات</h2>
+      <div id="fines"></div>
+    </section>
+
+    <section class="card">
+      <h2>محطات</h2>
+      <div class="miles" id="miles"></div>
+    </section>
+
+    <section class="card">
+      <h2>ساعاتك الخطيرة</h2>
+      <div class="hours" id="hours"></div>
+      <p id="trigStats" class="small muted"></p>
+    </section>
+
+    <section class="card slim" id="docCard"><span>👁️</span><span id="docLine"></span></section>
+
+    <button class="btn" id="copyWeek" type="button">انسخ ملخص الأسبوع لـClaude</button>
+  </section>
+
+  <!-- ============ SETTINGS ============ -->
+  <section id="tab-settings" class="tab" hidden>
+    <h1 class="page-h">الإعدادات</h1>
+    <section class="card">
+      <h2>كود الإعدادات</h2>
+      <p class="muted small">الصق الكود اللي Claude بعتهولك. بيتحفظ على الموبايل ده بس.</p>
+      <textarea id="importCode" placeholder='{"name":"…"}'></textarea>
+      <button class="btn primary" id="importBtn" type="button">احفظ الكود</button>
+    </section>
+    <details class="card">
+      <summary>عدّل بياناتك</summary>
+      <div class="form">
+        <label>اسمك<input id="s_name" type="text"></label>
+        <label>رقم ماما بكود الدولة<input id="s_momPhone" type="tel" inputmode="tel" placeholder="+20…"></label>
+        <label>الغرامة لكل يوم سكر (جنيه)<input id="s_fine" type="number" inputmode="numeric"></label>
+        <div class="two">
+          <label>وزن البداية<input id="s_startKg" type="number" step="0.1" inputmode="decimal"></label>
+          <label>الهدف<input id="s_goalKg" type="number" step="0.1" inputmode="decimal"></label>
+        </div>
+        <div class="two">
+          <label>من غير سكر من يوم<input id="s_sugarFreeSince" type="date"></label>
+          <label>دكتور العيون<input id="s_doctorDate" type="date"></label>
+        </div>
+        <label>رسالة عينك (أول حاجة في الطوارئ)<textarea id="s_eyeStory"></textarea></label>
+        <label>أسبابك (سطر لكل سبب)<textarea id="s_reasons"></textarea></label>
+        <label>خطط "لو… هعمل…" (سطر لكل خطة)<textarea id="s_plans"></textarea></label>
+        <button class="btn primary" id="saveSettings" type="button">احفظ</button>
+      </div>
+    </details>
+    <section class="card">
+      <h2>نسخة احتياطية</h2>
+      <p class="muted small">بياناتك وصورك على الموبايل ده بس. خد نسخة كل أسبوع واحفظها في iCloud Drive.</p>
+      <div class="row-btns">
+        <button class="btn" id="exportBtn" type="button">خد نسخة</button>
+        <label class="btn" for="restoreInput">رجّع من نسخة</label>
+      </div>
+      <input id="restoreInput" type="file" accept="application/json,.json" hidden>
+      <p class="muted small" id="storageInfo"></p>
+    </section>
+    <details class="card">
+      <summary>مشاوير مشي في بودابست</summary>
+      <ul class="routes">
+        <li><b>جزيرة مارجيت:</b> تراك حوالين الجزيرة حوالي 5.3 كم بأرضية طرية. اللفة كاملة حوالي ساعة مشي.</li>
+        <li><b>كورنيش الدانوب:</b> من البرلمان لكوبري السلاسل ورجوع، حوالي 35–40 دقيقة.</li>
+        <li><b>City Park (Városliget):</b> لفة حوالين البحيرة وقلعة ڤايداهونياد.</li>
+        <li><b>من غير خطة:</b> امشي 15 دقيقة في أي اتجاه وارجع. كده عملت 30.</li>
+      </ul>
+    </details>
+  </section>
+</main>
+
+<!-- ============ SHEETS ============ -->
+<div class="sheet-bg" id="sheetBg" hidden></div>
+
+<section class="sheet" id="protSheet" hidden aria-label="ضيف بروتين">
+  <div class="row"><h2>أكلت إيه؟</h2><button class="linkbtn" data-close type="button">تمام</button></div>
+  <div class="pgrid" id="pgrid"></div>
+  <div class="row"><span class="muted small" id="pLast"></span><button class="linkbtn" id="pUndo" type="button" hidden>شيل آخر واحدة</button></div>
+</section>
+
+<section class="sheet" id="walkSheet" hidden aria-label="المشي">
+  <div class="row"><h2 id="walkTitle">يلا ننزل</h2><button class="linkbtn" data-close type="button">قفل</button></div>
+  <p class="walk-line" id="walkLine"></p>
+  <div id="walkIdle">
+    <button class="btn primary big-btn" id="walkStart" type="button">ابدأ العدّاد</button>
+    <p class="muted small">مشيت من غير العدّاد؟ سجّل الدقايق:</p>
+    <div class="row-btns"><button class="btn" data-walk="10" type="button">+10</button><button class="btn" data-walk="20" type="button">+20</button><button class="btn" data-walk="30" type="button">+30</button><button class="btn" data-walk="45" type="button">+45</button></div>
+  </div>
+  <div id="walkLive" hidden>
+    <div class="timer num" id="walkElapsed">00:00</div>
+    <p class="muted small center" id="walkKcal"></p>
+    <button class="btn primary big-btn" id="walkStop" type="button">خلّصت</button>
+  </div>
+</section>
+
+<section class="sheet" id="weightSheet" hidden aria-label="سجّل الوزن">
+  <div class="row"><h2>سجّل الوزن</h2><button class="linkbtn" data-close type="button">قفل</button></div>
+  <form class="wform" id="wform">
+    <label>الوزن (كجم)<input id="wKg" type="number" step="0.1" inputmode="decimal" placeholder="مثلاً 95.5"></label>
+    <label>الدهون %<input id="wFat" type="number" step="0.1" inputmode="decimal" placeholder="اختياري"></label>
+    <label>الحشوية<input id="wVis" type="number" step="0.5" inputmode="decimal" placeholder="اختياري"></label>
+    <button class="btn primary full" type="submit">احفظ</button>
+  </form>
+</section>
+
+<section class="sheet" id="sugarSheet" hidden aria-label="كلت سكر">
+  <div id="sugarAsk">
+    <h2>متأكد؟</h2>
+    <p>هتتسجل غرامة <b id="fineNow">200</b> جنيه، والعدّاد هيبدأ من الصفر بكره.</p>
+    <div class="row-btns"><button class="btn danger" id="sugarYes" type="button">أيوه سجّل</button><button class="btn" data-close type="button">لأ، رجوع</button></div>
+  </div>
+  <div id="sugarReview" hidden>
+    <h2>حصل. يلا نتعلم منها</h2>
+    <p class="small">الغلطة مش بتبوّظ الخطة. اللي بيبوّظها "خلاص بوظت اليوم". خلي الوجبة الجاية بروتين.</p>
+    <p class="small"><b>إيه اللي حصل؟</b></p>
+    <div class="trig" id="lapseTrigs"></div>
+    <label class="small"><b>المرة الجاية هعمل إيه؟</b><textarea id="lapsePlan" placeholder="لو عديت على المخبز الصبح، هكمل ماشي وأشتري قهوة سادة"></textarea></label>
+    <button class="btn primary big-btn" id="lapseSave" type="button">احفظ الخطة</button>
+  </div>
+</section>
+
+<!-- ============ SOS ============ -->
+<section id="sos" class="sos-screen" hidden aria-label="طوارئ">
+  <div class="sos-in">
+    <div class="row"><span class="muted small">طوارئ</span><button class="linkbtn" id="sosClose" type="button">قفل</button></div>
+    <div class="eye" id="eyeStory"></div>
+    <article class="fact" id="factCard"><span class="fact-cat" id="factCat"></span><h2 id="factTitle"></h2><p id="factBody"></p><span class="fact-src" id="factSrc"></span></article>
+    <button class="linkbtn" id="nextFact" type="button">كارت تاني ←</button>
+
+    <div id="sosStep1" class="sos-step">
+      <h2>إيه اللي حرّكك؟</h2>
+      <div class="trig" id="trigs"></div>
+      <label class="slider-l">قوة الرغبة <b id="beforeVal">7</b>/10<input id="before" type="range" min="1" max="10" value="7"></label>
+      <button class="btn primary big-btn" id="sosGo" type="button">استنى 15 دقيقة</button>
+    </div>
+
+    <div id="sosStep2" class="sos-step" hidden>
+      <div class="timer num" id="timer">15:00</div>
+      <div class="stakes" id="stakes"></div>
+      <ul class="plans" id="planList"></ul>
+      <div class="alts"><div>🚶 انزل امشي 10 دقايق</div><div>💧 كوباية مية كبيرة</div><div>🪥 اغسل سنانك</div><div>🥚 زبادي يوناني أو بيضتين</div></div>
+      <label class="slider-l">والرغبة دلوقتي؟ <b id="afterVal">7</b>/10<input id="after" type="range" min="1" max="10" value="7"></label>
+      <div class="row-btns"><button class="btn primary" id="sosWin" type="button">عدّت، ما كلتش</button><button class="btn danger" id="sosLose" type="button">كلت</button></div>
+    </div>
+  </div>
+</section>
+
+<button class="sos-fab" id="sosBtn" type="button">نفسي في حاجة حلوة</button>
+<nav class="nav" aria-label="التنقل">
+  <button type="button" data-go="today" class="on">النهارده</button>
+  <button type="button" data-go="progress">التقدم</button>
+  <button type="button" data-go="settings">الإعدادات</button>
+</nav>
+<div class="toast" id="toast" hidden></div>
+
+<script src="facts.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
