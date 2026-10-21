@@ -45,31 +45,26 @@
       <button class="btn primary big-btn" id="pledgeBtn" type="button">أتعهد: النهارده مش هشتري مخبوزات ولا حلويات</button>
     </section>
 
-    <ul class="today" aria-label="مهام النهارده">
-      <li class="item" id="itWalk">
-        <span class="ic" aria-hidden="true">🚶</span>
-        <span class="tx"><b>مشي</b><span class="sub" id="walkSub">0 من 30 دقيقة</span></span>
-        <span class="mini"><i id="walkBar"></i></span>
-        <button class="act primary" id="walkBtn" type="button">ابدأ</button>
-      </li>
-      <li class="item" id="itMeal">
-        <span class="ic" aria-hidden="true">📸</span>
-        <span class="tx"><b>صوّر الأكلة</b><span class="sub" id="mealSub">ولا أكلة لسه</span></span>
-        <label class="act primary" for="mealInput">صوّر</label>
-        <input id="mealInput" type="file" accept="image/*" capture="environment" hidden>
-      </li>
-      <li class="item" id="itProt">
-        <span class="ic" aria-hidden="true">🥚</span>
-        <span class="tx"><b>بروتين</b><span class="sub" id="protSub">0 من 150 جم</span></span>
-        <span class="mini"><i id="protBar"></i></span>
-        <button class="act" id="protBtn" type="button">+ ضيف</button>
-      </li>
-      <li class="item tog" data-habit="water">
-        <span class="ic" aria-hidden="true">💧</span>
-        <span class="tx"><b>2.5 لتر مية</b></span>
-        <button class="check" type="button" aria-label="مية"></button>
-      </li>
-    </ul>
+    <div class="tiles" aria-label="مهام النهارده">
+      <button class="tile walk" id="itWalk" type="button">
+        <span class="t-ic" aria-hidden="true">🚶</span>
+        <b>مشي</b><span class="t-sub" id="walkSub">0 من 30 دقيقة</span>
+        <span class="t-streak" id="walkFlame" hidden></span>
+      </button>
+      <label class="tile meal" id="itMeal" for="mealInput">
+        <span class="t-ic" aria-hidden="true">📸</span>
+        <b>صوّر الأكلة</b><span class="t-sub" id="mealSub">ولا أكلة لسه</span>
+      </label>
+      <input id="mealInput" type="file" accept="image/*" capture="environment" hidden>
+      <button class="tile prot" id="itProt" type="button">
+        <span class="t-ic" aria-hidden="true">🥚</span>
+        <b>بروتين</b><span class="t-sub" id="protSub">0 من 150 جم</span>
+      </button>
+      <button class="tile water" id="itWater" type="button">
+        <span class="t-ic" aria-hidden="true">💧</span>
+        <b>2.5 لتر مية</b><span class="t-sub" id="waterSub">اضغط لما تخلص</span>
+      </button>
+    </div>
 
     <div class="meals" id="meals"></div>
 

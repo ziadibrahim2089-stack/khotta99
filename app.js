@@ -124,24 +124,19 @@ function renderToday() {
   document.querySelectorAll("[data-sleep]").forEach(b => b.setAttribute("aria-pressed", String(t.sleep === (b.dataset.sleep === "1"))));
   $("riskNote").hidden = t.sleep !== false;
 
-  // walk
-  const w = t.walk || 0, live = !!S.walkStart;
-  $("walkSub").textContent = live ? "ماشي دلوقتي…" : w >= WALK_GOAL ? `${w} دقيقة ✓` : `${w} من ${WALK_GOAL} دقيقة`;
-  $("walkBar").style.width = Math.min(100, w / WALK_GOAL * 100) + "%";
-  $("itWalk").classList.toggle("done", w >= WALK_GOAL);
-  $("walkBtn").textContent = live ? "شغال" : w >= WALK_GOAL ? "+ زوّد" : "ابدأ";
-
-  // protein
+  // tiles
+  const w = t.walk || 0, live = !!S.walkStart, ws = walkStreak();
+  $("walkSub").textContent = live ? "ماشي دلوقتي…" : w >= WALK_GOAL ? `${w} دقيقة` : `${w} من ${WALK_GOAL} دقيقة`;
+  $("walkFlame").hidden = ws < 1; $("walkFlame").textContent = `🔥 ${ws}`;
+  tile("itWalk", w > 0 || live, w >= WALK_GOAL);
   const p = t.protein || 0;
   $("protSub").textContent = `${p} من ${GOAL_P} جم`;
-  $("protBar").style.width = Math.min(100, p / GOAL_P * 100) + "%";
-  $("itProt").classList.toggle("done", p >= GOAL_P);
+  tile("itProt", p > 0, p >= GOAL_P);
   const last = (t.plog || []).slice(-1)[0];
   $("pLast").textContent = last ? `آخر حاجة: ${last[0]} (+${last[1]})` : "";
   $("pUndo").hidden = !last;
-
-  // water
-  document.querySelectorAll("[data-habit]").forEach(li => li.classList.toggle("done", !!t[li.dataset.habit]));
+  $("waterSub").textContent = t.water ? "خلّصتها" : "اضغط لما تخلص";
+  tile("itWater", !!t.water, !!t.water);
 
   // sugar link
   $("ateSugar").textContent = t.sugar ? "اتسجّل إنك كلت سكر النهارده" : "كلت سكر النهارده";
@@ -151,17 +146,19 @@ function renderToday() {
 async function renderMeals() {
   let ps = [];
   try { ps = await photosOn(todayKey()); } catch (e) {}
-  $("mealSub").textContent = ps.length ? `${ps.length} أكلة النهارده · اضغط الصورة تبعتها` : "ولا أكلة لسه";
-  $("itMeal").classList.toggle("done", ps.length > 0);
+  $("mealSub").textContent = ps.length ? `${ps.length} أكلة النهارده` : "ولا أكلة لسه";
+  tile("itMeal", ps.length > 0, ps.length >= 3);
   const box = $("meals"); box.innerHTML = "";
   ps.sort((a, b) => a.ts - b.ts).forEach(r => {
-    const b = document.createElement("button"); b.type = "button"; b.className = "meal";
+    const b = document.createElement("button"); b.type = "button"; b.className = "mthumb";
     const img = document.createElement("img"); img.alt = "أكلة"; img.src = URL.createObjectURL(r.blob);
     const tm = document.createElement("span"); const d = new Date(r.ts); tm.textContent = `${pad(d.getHours())}:${pad(d.getMinutes())}`;
     b.append(img, tm); b.onclick = () => sharePhoto(r); box.appendChild(b);
   });
   if (day().meals !== ps.length) { day().meals = ps.length; save(); }
 }
+
+function tile(id, on, done) { const el = $(id); el.classList.toggle("on", on); el.classList.toggle("done", done); }
 
 /* ---------------- render: progress ---------------- */
 function renderProgress() {
@@ -266,11 +263,11 @@ FOODS.forEach(([n, g]) => {
   b.onclick = () => { const t = day(); t.protein += g; t.plog.push([n, g]); t.plog = t.plog.slice(-40); save(); render(); };
   $("pgrid").appendChild(b);
 });
-$("protBtn").onclick = () => openSheet("protSheet");
+$("itProt").onclick = () => openSheet("protSheet");
 $("pUndo").onclick = () => { const t = day(), r = t.plog.pop(); if (r) t.protein = Math.max(0, t.protein - r[1]); save(); render(); };
 
 // water
-document.querySelectorAll("[data-habit]").forEach(li => li.querySelector(".check").onclick = () => { const t = day(); t[li.dataset.habit] = !t[li.dataset.habit]; save(); render(); });
+$("itWater").onclick = () => { const t = day(); t.water = !t.water; save(); render(); };
 
 // walk
 let walkTick = null;
@@ -290,7 +287,7 @@ function walkView() {
     up(); walkTick = setInterval(up, 1000);
   }
 }
-$("walkBtn").onclick = () => { walkView(); openSheet("walkSheet"); };
+$("itWalk").onclick = () => { walkView(); openSheet("walkSheet"); };
 $("walkStart").onclick = () => { S.walkStart = Date.now(); save(); walkView(); render(); };
 $("walkStop").onclick = () => {
   const m = Math.round((Date.now() - S.walkStart) / 60000); S.walkStart = null;
